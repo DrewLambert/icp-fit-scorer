@@ -37,14 +37,14 @@ export function CriteriaWeightSlider({
       className="py-5 border-b border-border/30 last:border-0 hover-highlight rounded-xl"
     >
       <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-          <Icon className="h-5 w-5 text-primary" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-secondary">
+          <Icon className="h-5 w-5 text-muted-foreground" />
         </div>
         
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-foreground">{criteria.name}</h3>
-            <span className="text-lg font-bold text-primary">{criteria.weight}%</span>
+            <span className="text-lg font-bold text-foreground">{criteria.weight}%</span>
           </div>
           
           <p className="mt-1 text-sm text-muted-foreground">
