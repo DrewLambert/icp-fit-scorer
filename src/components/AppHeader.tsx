@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Target, Settings, Users } from 'lucide-react';
-import fitchLogo from '@/assets/fitch-logo.png';
+import { Target, Settings, Users, BarChart3 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const navItems = [
   { path: '/', label: 'Score', icon: Target },
   { path: '/setup', label: 'Setup', icon: Settings },
   { path: '/prospects', label: 'Prospects', icon: Users },
+  { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
 ];
 
 export function AppHeader() {
@@ -14,19 +15,24 @@ export function AppHeader() {
 
   return (
     <header className="sticky top-0 z-50">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex items-center justify-between px-8 py-4 bg-gradient-to-b from-background via-background/80 to-transparent"
       >
         <Link to="/" className="flex items-center gap-2">
-          <motion.img
-            src={fitchLogo}
-            alt="Fitch"
-            className="h-8 w-auto"
+          <motion.div
+            className="flex items-center gap-2"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-          />
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent">
+              <Target className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="text-lg font-bold gradient-text hidden sm:inline" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+              FitCheck
+            </span>
+          </motion.div>
         </Link>
 
         <nav className="flex items-center gap-2">
@@ -51,6 +57,9 @@ export function AppHeader() {
               </Link>
             );
           })}
+          <div className="ml-2">
+            <ThemeToggle />
+          </div>
         </nav>
       </motion.div>
     </header>
