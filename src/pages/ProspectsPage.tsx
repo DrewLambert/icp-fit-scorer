@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useICPStore } from '@/stores/icpStore';
 import { ProspectRow } from '@/components/ProspectRow';
@@ -6,7 +6,8 @@ import { CompareView } from '@/components/CompareView';
 import { TopEngagedLeads } from '@/components/engagement-scoring/TopEngagedLeads';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
+import { Slider } from '@/components/ui/slider';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -14,9 +15,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Search, GitCompare, Trash2, TrendingUp, Target } from 'lucide-react';
+import { Users, Search, GitCompare, Trash2, TrendingUp, Target, Download, SlidersHorizontal, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useEngagementSettings } from '@/hooks/useEngagementScoring';
+import { exportProspectsToCSV } from '@/lib/csv-export';
+import { Tier } from '@/types/icp';
+import { Link } from 'react-router-dom';
 
 type SortField = 'tier' | 'score' | 'date' | 'name';
 type SortOrder = 'asc' | 'desc';
@@ -29,16 +33,23 @@ export default function ProspectsPage() {
   const [compareIds, setCompareIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
   const [activeTab, setActiveTab] = useState('prospects');
-  
+  const [showFilters, setShowFilters] = useState(false);
+  const [tierFilter, setTierFilter] = useState<Tier | 'all'>('all');
+  const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
+
   const { data: engagementSettings } = useEngagementSettings();
 
   const tierOrder = { A: 0, B: 1, C: 2, D: 3 };
 
   const filteredProspects = prospects
-    .filter((p) =>
-      p.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.companyDescription.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    .filter((p) => {
+      const matchesSearch =
+        p.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.companyDescription.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesTier = tierFilter === 'all' || p.tier === tierFilter;
+      const matchesScore = p.totalScore >= scoreRange[0] && p.totalScore <= scoreRange[1];
+      return matchesSearch && matchesTier && matchesScore;
+    })
     .sort((a, b) => {
       let comparison = 0;
       switch (sortField) {
@@ -58,6 +69,40 @@ export default function ProspectsPage() {
       }
       return sortOrder === 'desc' ? -comparison : comparison;
     });
+
+  const handleExport = useCallback(() => {
+    if (prospects.length === 0) {
+      toast({
+        title: 'No Data',
+        description: 'There are no prospects to export.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    exportProspectsToCSV(filteredProspects.length > 0 ? filteredProspects : prospects);
+    toast({
+      title: 'Export Complete',
+      description: `Exported ${filteredProspects.length || prospects.length} prospects to CSV.`,
+    });
+  }, [prospects, filteredProspects]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key === 'e') {
+        e.preventDefault();
+        handleExport();
+      }
+      if (mod && e.key === 'k') {
+        e.preventDefault();
+        const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+        input?.focus();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleExport]);
 
   const toggleCompare = (id: string) => {
     setCompareIds((prev) => {
@@ -96,9 +141,17 @@ export default function ProspectsPage() {
     });
   };
 
+  const hasActiveFilters = tierFilter !== 'all' || scoreRange[0] > 0 || scoreRange[1] < 100;
+
+  const clearFilters = () => {
+    setTierFilter('all');
+    setScoreRange([0, 100]);
+    setSearchQuery('');
+  };
+
   return (
     <div className="max-w-5xl mx-auto space-y-16">
-      {/* Hero section - flowing */}
+      {/* Hero section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -141,60 +194,141 @@ export default function ProspectsPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="flex flex-col sm:flex-row gap-4"
+                className="space-y-3"
               >
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search prospects..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-secondary/50 border-border"
-                  />
-                </div>
+                {/* Search & Actions Row */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      data-search-input
+                      placeholder="Search prospects... (Cmd+K)"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 bg-secondary/50 border-border"
+                    />
+                  </div>
 
-                <div className="flex gap-2">
-                  <Select value={sortField} onValueChange={(v) => setSortField(v as SortField)}>
-                    <SelectTrigger className="w-32 bg-secondary/50">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="tier">Tier</SelectItem>
-                      <SelectItem value="date">Date</SelectItem>
-                      <SelectItem value="score">Score</SelectItem>
-                      <SelectItem value="name">Name</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex gap-2 flex-wrap">
+                    <Select value={sortField} onValueChange={(v) => setSortField(v as SortField)}>
+                      <SelectTrigger className="w-32 bg-secondary/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="tier">Tier</SelectItem>
+                        <SelectItem value="date">Date</SelectItem>
+                        <SelectItem value="score">Score</SelectItem>
+                        <SelectItem value="name">Name</SelectItem>
+                      </SelectContent>
+                    </Select>
 
-                  <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as SortOrder)}>
-                    <SelectTrigger className="w-28 bg-secondary/50">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="desc">Desc</SelectItem>
-                      <SelectItem value="asc">Asc</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as SortOrder)}>
+                      <SelectTrigger className="w-28 bg-secondary/50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="desc">Desc</SelectItem>
+                        <SelectItem value="asc">Asc</SelectItem>
+                      </SelectContent>
+                    </Select>
 
-                  {compareIds.length >= 2 && (
                     <Button
-                      onClick={() => setShowCompare(true)}
-                      className="gap-2 bg-primary hover:bg-primary/90"
+                      variant="outline"
+                      onClick={() => setShowFilters(!showFilters)}
+                      className={`gap-2 ${hasActiveFilters ? 'text-primary border-primary/30' : ''}`}
                     >
-                      <GitCompare className="h-4 w-4" />
-                      Compare ({compareIds.length})
+                      <SlidersHorizontal className="h-4 w-4" />
+                      Filter
+                      {hasActiveFilters && (
+                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+                          !
+                        </span>
+                      )}
                     </Button>
-                  )}
 
-                  <Button
-                    variant="outline"
-                    onClick={handleClearAll}
-                    className="gap-2 text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    Clear All
-                  </Button>
+                    {compareIds.length >= 2 && (
+                      <Button
+                        onClick={() => setShowCompare(true)}
+                        className="gap-2 bg-primary hover:bg-primary/90"
+                      >
+                        <GitCompare className="h-4 w-4" />
+                        Compare ({compareIds.length})
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="outline"
+                      onClick={handleExport}
+                      className="gap-2"
+                      title="Export to CSV (Cmd+E)"
+                    >
+                      <Download className="h-4 w-4" />
+                      <span className="hidden sm:inline">Export</span>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      onClick={handleClearAll}
+                      className="gap-2 text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="hidden sm:inline">Clear All</span>
+                    </Button>
+                  </div>
                 </div>
+
+                {/* Filter Panel */}
+                <AnimatePresence>
+                  {showFilters && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="flex flex-col sm:flex-row gap-6 py-4 px-4 rounded-2xl bg-secondary/10">
+                        <div className="space-y-2 flex-1">
+                          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Tier</label>
+                          <Select value={tierFilter} onValueChange={(v) => setTierFilter(v as Tier | 'all')}>
+                            <SelectTrigger className="bg-secondary/50">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Tiers</SelectItem>
+                              <SelectItem value="A">Tier A</SelectItem>
+                              <SelectItem value="B">Tier B</SelectItem>
+                              <SelectItem value="C">Tier C</SelectItem>
+                              <SelectItem value="D">Tier D</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2 flex-1">
+                          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                            Score Range: {scoreRange[0]} - {scoreRange[1]}
+                          </label>
+                          <Slider
+                            value={scoreRange}
+                            onValueChange={(v) => setScoreRange(v as [number, number])}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="mt-3"
+                          />
+                        </div>
+
+                        {hasActiveFilters && (
+                          <div className="flex items-end">
+                            <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1 text-muted-foreground">
+                              <X className="h-3 w-3" />
+                              Clear
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
 
               <div className="space-y-3 mt-4">
@@ -217,7 +351,13 @@ export default function ProspectsPage() {
                   animate={{ opacity: 1 }}
                   className="text-center py-12"
                 >
-                  <p className="text-muted-foreground">No prospects match your search.</p>
+                  <Search className="h-10 w-10 text-muted-foreground/30 mx-auto mb-4" />
+                  <p className="text-muted-foreground">No prospects match your search or filters.</p>
+                  {hasActiveFilters && (
+                    <Button variant="link" onClick={clearFilters} className="mt-2 text-primary">
+                      Clear all filters
+                    </Button>
+                  )}
                 </motion.div>
               )}
             </>
@@ -228,15 +368,33 @@ export default function ProspectsPage() {
               transition={{ delay: 0.3 }}
               className="text-center py-20"
             >
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary/30 mx-auto mb-6">
-                <Users className="h-10 w-10 text-muted-foreground/50" />
+              <div className="relative mx-auto mb-8 w-40 h-40">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/10 to-accent/5 animate-pulse" />
+                <div className="absolute inset-4 rounded-full bg-secondary/20 flex items-center justify-center">
+                  <div className="space-y-2">
+                    <Users className="h-12 w-12 text-muted-foreground/30 mx-auto" />
+                    <div className="flex gap-1 justify-center">
+                      {['A', 'B', 'C'].map((tier) => (
+                        <span
+                          key={tier}
+                          className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/10 text-primary/40"
+                        >
+                          {tier}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
               <h3 className="text-2xl font-semibold text-foreground mb-3">No Prospects Yet</h3>
-              <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-                Start scoring companies to build your prospect list.
+              <p className="text-muted-foreground mb-2 max-w-sm mx-auto">
+                Score your first company to start building your prospect pipeline.
+              </p>
+              <p className="text-xs text-muted-foreground/60 mb-8 max-w-xs mx-auto">
+                Each scored company gets a tier (A-D), criteria breakdown, and AI-generated outreach.
               </p>
               <Button asChild className="bg-primary hover:bg-primary/90 rounded-full px-8">
-                <a href="/">Score Your First Prospect</a>
+                <Link to="/">Score Your First Prospect</Link>
               </Button>
             </motion.div>
           )}
@@ -249,7 +407,7 @@ export default function ProspectsPage() {
               animate={{ opacity: 1, y: 0 }}
               className="grid gap-6"
             >
-              <TopEngagedLeads 
+              <TopEngagedLeads
                 limit={15}
                 onLeadClick={(leadId) => {
                   toast({
@@ -273,7 +431,7 @@ export default function ProspectsPage() {
                 Enable engagement scoring in Settings, then Engage to track lead activity.
               </p>
               <Button asChild className="bg-primary hover:bg-primary/90 rounded-full px-8">
-                <a href="/setup">Go to Settings</a>
+                <Link to="/setup">Go to Settings</Link>
               </Button>
             </motion.div>
           )}
