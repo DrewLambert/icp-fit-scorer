@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Fitch Brand System - Warm Autumn Theme */
+    
+    /* Background Colors - Rich dark brown */
+    --background: 20 14% 6%; /* Deep espresso */
+    --foreground: 35 25% 95%; /* Warm cream */
+
+    --card: 20 12% 9%; /* Dark walnut */
+    --card-foreground: 35 25% 95%;
+
+    --popover: 20 10% 12%; /* Warm charcoal */
+    --popover-foreground: 35 25% 95%;
+
+    /* Primary - Autumn Orange */
+    --primary: 25 85% 55%; /* Burnt orange */
+    --primary-foreground: 20 14% 6%;
+
+    /* Secondary */
+    --secondary: 20 10% 14%; /* Dark mocha */
+    --secondary-foreground: 35 25% 95%;
+
+    /* Muted */
+    --muted: 20 8% 28%; /* Warm taupe */
+    --muted-foreground: 30 10% 55%; /* Dusty brown */
+
+    /* Accent - Golden Amber */
+    --accent: 38 75% 58%; /* Golden amber */
+    --accent-foreground: 20 14% 6%;
+
+    /* Semantic Colors */
+    --destructive: 0 65% 55%; /* Terracotta red */
+    --destructive-foreground: 35 25% 95%;
+
+    --success: 85 45% 50%; /* Sage green */
+    --success-foreground: 20 14% 6%;
+
+    --warning: 42 90% 55%; /* Honey gold */
+    --warning-foreground: 20 14% 6%;
+
+    --info: 200 55% 55%; /* Slate blue */
+    --info-foreground: 20 14% 6%;
+
+    /* Borders - softer, more organic */
+    --border: 25 8% 18%;
+    --input: 25 8% 18%;
+    --ring: 25 85% 55%;
+
+    --radius: 1rem;
+
+    /* Custom gradients - Autumn warmth */
+    --gradient-primary: linear-gradient(135deg, hsl(25 85% 55%) 0%, hsl(38 75% 58%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(20 12% 11%) 0%, hsl(20 12% 7%) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(25 85% 55% / 0.15) 0%, transparent 70%);
+    --gradient-mesh: radial-gradient(at 40% 20%, hsl(25 60% 12% / 0.5) 0px, transparent 50%),
+                     radial-gradient(at 80% 0%, hsl(38 50% 10% / 0.4) 0px, transparent 50%),
+                     radial-gradient(at 0% 50%, hsl(20 30% 8% / 0.6) 0px, transparent 50%),
+                     radial-gradient(at 80% 50%, hsl(25 40% 10% / 0.3) 0px, transparent 50%),
+                     radial-gradient(at 0% 100%, hsl(20 25% 8% / 0.5) 0px, transparent 50%);
+    
+    /* Score colors */
+    --score-poor: 0 65% 55%; /* Terracotta */
+    --score-moderate: 42 90% 55%; /* Honey */
+    --score-strong: 85 45% 50%; /* Sage */
+
+    /* Sidebar */
+    --sidebar-background: 20 12% 7%;
+    --sidebar-foreground: 35 25% 95%;
+    --sidebar-primary: 25 85% 55%;
+    --sidebar-primary-foreground: 20 14% 6%;
+    --sidebar-accent: 20 10% 14%;
+    --sidebar-accent-foreground: 35 25% 95%;
+    --sidebar-border: 25 12% 20%;
+    --sidebar-ring: 25 85% 55%;
+
+    /* Shadows - softer, more diffused */
+    --shadow-sm: 0 2px 8px rgba(20,10,0,0.25);
+    --shadow-md: 0 8px 32px rgba(20,10,0,0.35);
+    --shadow-lg: 0 16px 48px rgba(20,10,0,0.45);
+    --shadow-glow: 0 0 40px rgba(200,100,40,0.15);
+    --shadow-inner: inset 0 2px 12px rgba(0,0,0,0.2);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    /* Flowing mesh gradient background */
+    background-image: var(--gradient-mesh);
+    background-attachment: fixed;
+  }
+
+  /* Playfair Display for headlines - elegant serif */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  /* Seamless section - no visible container, just ambient glow */
+  .seamless-section {
+    @apply relative py-8;
+  }
+
+  .seamless-section::before {
+    content: '';
+    position: absolute;
+    inset: -2rem;
+    background: radial-gradient(
+      ellipse at 50% 30%,
+      hsl(25 25% 10% / 0.4) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+    border-radius: 3rem;
+  }
+
+  /* Fluid section - very subtle ambient background */
+  .fluid-section {
+    @apply relative py-6;
+  }
+
+  .fluid-section::before {
+    content: '';
+    position: absolute;
+    inset: -1rem;
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      hsl(25 20% 12% / 0.25) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    border-radius: 2rem;
+  }
+
+  /* Remove all card styling - use only for critical interactive areas */
+  .fluid-card {
+    @apply relative;
+    /* No background, no border - truly seamless */
+  }
+
+  /* Inline row - seamless with soft hover */
+  .inline-row {
+    @apply relative flex items-center gap-4 py-4 px-4 -mx-4 transition-all duration-300 rounded-2xl;
+  }
+
+  .inline-row:hover {
+    background: radial-gradient(
+      ellipse at 50% 50%,
+      hsl(25 20% 14% / 0.5) 0%,
+      hsl(25 15% 10% / 0.2) 100%
+    );
+  }
+
+  /* Glass card - use VERY sparingly, only for modals/overlays */
+  .glass-card {
+    @apply relative overflow-hidden;
+    background: linear-gradient(
+      160deg,
+      hsl(20 12% 11% / 0.6) 0%,
+      hsl(20 10% 8% / 0.4) 100%
+    );
+    border: 1px solid hsl(25 12% 20% / 0.2);
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(20,10,0,0.1);
+    backdrop-filter: blur(6px);
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(25 50% 45% / 0.1), transparent);
+    pointer-events: none;
+  }
+
+  .glass-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  .glow-effect {
+    box-shadow: 0 0 60px rgba(200,100,40,0.08);
+  }
+
+  /* Score gauge styles */
+  .score-gauge-track {
+    stroke: hsl(var(--secondary));
+  }
+
+  .score-gauge-poor {
+    stroke: hsl(var(--score-poor));
+  }
+
+  .score-gauge-moderate {
+    stroke: hsl(var(--score-moderate));
+  }
+
+  .score-gauge-strong {
+    stroke: hsl(var(--score-strong));
+  }
+
+  /* Section label style */
+  .section-label {
+    @apply text-xs font-medium uppercase tracking-widest text-muted-foreground/60;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Lead text */
+  .lead-text {
+    @apply text-lg text-muted-foreground leading-relaxed;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Organic divider - very subtle */
+  .organic-divider {
+    @apply w-full h-px my-8;
+    background: linear-gradient(
+      90deg,
+      transparent 5%,
+      hsl(25 15% 22% / 0.25) 35%,
+      hsl(25 15% 22% / 0.25) 65%,
+      transparent 95%
+    );
+  }
+
+  /* Hover highlight - ambient glow on hover */
+  .hover-highlight {
+    @apply transition-all duration-300 rounded-xl -mx-3 px-3;
+  }
+
+  .hover-highlight:hover {
+    background: radial-gradient(
+      ellipse at center,
+      hsl(25 25% 14% / 0.3) 0%,
+      transparent 80%
+    );
+  }
+
+  /* Input focus glow */
+  .input-glow:focus-within {
+    box-shadow: 0 0 0 2px hsl(25 85% 55% / 0.15), 0 0 40px hsl(25 85% 55% / 0.08);
+  }
+}
+
+@layer utilities {
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  /* Text colors matching hierarchy */
+  .text-primary-content {
+    color: hsl(var(--foreground));
+  }
+
+  .text-secondary-content {
+    color: hsl(0 0% 83%);
+  }
+
+  .text-tertiary-content {
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Fluid transitions */
+  .transition-fluid {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}

@@ -1,0 +1,19 @@
+project_id = "dqqvbwcoibvifxkuhaua"
+
+[functions.score-prospect]
+verify_jwt = false
+
+[functions.enrich-company]
+verify_jwt = false
+
+[functions.regenerate-outreach]
+verify_jwt = false
+
+[functions.train-predictive-model]
+verify_jwt = false
+
+[functions.predict-lead-score]
+verify_jwt = false
+
+[functions.log-signal]
+verify_jwt = false
