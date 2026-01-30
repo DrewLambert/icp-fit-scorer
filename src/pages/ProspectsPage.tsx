@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useICPStore } from '@/stores/icpStore';
 import { ProspectRow } from '@/components/ProspectRow';
 import { CompareView } from '@/components/CompareView';
@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Search, GitCompare, Trash2, TrendingUp, Target, Download, SlidersHorizontal, X } from 'lucide-react';
+import { Search, GitCompare, Trash2, Download, SlidersHorizontal, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useEngagementSettings } from '@/hooks/useEngagementScoring';
 import { exportProspectsToCSV } from '@/lib/csv-export';
@@ -86,7 +86,6 @@ export default function ProspectsPage() {
     });
   }, [prospects, filteredProspects]);
 
-  // Keyboard shortcuts
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       const mod = e.metaKey || e.ctrlKey;
@@ -151,38 +150,21 @@ export default function ProspectsPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-16">
-      {/* Hero section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-6 pt-8"
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="inline-flex items-center gap-3"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-            <Users className="h-5 w-5 text-primary" />
-          </div>
-        </motion.div>
-        <h1 className="text-5xl sm:text-6xl font-bold gradient-text leading-tight">
+      <div className="space-y-4 pt-8">
+        <h1 className="text-h1 text-foreground">
           Prospects
         </h1>
-        <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed">
+        <p className="text-muted-foreground max-w-xl text-body-lg">
           View, compare, and manage all your scored companies.
         </p>
-      </motion.div>
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="flex justify-center gap-2 mb-12 bg-transparent p-0">
-          <TabsTrigger value="prospects" className="gap-2 px-6 py-2.5 rounded-full bg-secondary/20 data-[state=active]:bg-primary/15 data-[state=active]:text-primary border-0">
-            <Target className="h-4 w-4" />
+        <TabsList className="flex justify-start gap-2 mb-12 bg-transparent p-0">
+          <TabsTrigger value="prospects" className="px-5 py-2 rounded text-sm bg-secondary data-[state=active]:bg-primary/15 data-[state=active]:text-primary border-0">
             Prospects
           </TabsTrigger>
-          <TabsTrigger value="engagement" className="gap-2 px-6 py-2.5 rounded-full bg-secondary/20 data-[state=active]:bg-primary/15 data-[state=active]:text-primary border-0" disabled={!engagementSettings?.engagement_enabled}>
-            <TrendingUp className="h-4 w-4" />
+          <TabsTrigger value="engagement" className="px-5 py-2 rounded text-sm bg-secondary data-[state=active]:bg-primary/15 data-[state=active]:text-primary border-0" disabled={!engagementSettings?.engagement_enabled}>
             Engagement
           </TabsTrigger>
         </TabsList>
@@ -190,12 +172,7 @@ export default function ProspectsPage() {
         <TabsContent value="prospects">
           {prospects.length > 0 ? (
             <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="space-y-3"
-              >
+              <div className="space-y-3">
                 {/* Search & Actions Row */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="relative flex-1">
@@ -205,13 +182,13 @@ export default function ProspectsPage() {
                       placeholder="Search prospects... (Cmd+K)"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-secondary/50 border-border"
+                      className="pl-10 bg-secondary border-border"
                     />
                   </div>
 
                   <div className="flex gap-2 flex-wrap">
                     <Select value={sortField} onValueChange={(v) => setSortField(v as SortField)}>
-                      <SelectTrigger className="w-32 bg-secondary/50">
+                      <SelectTrigger className="w-32 bg-secondary">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -223,7 +200,7 @@ export default function ProspectsPage() {
                     </Select>
 
                     <Select value={sortOrder} onValueChange={(v) => setSortOrder(v as SortOrder)}>
-                      <SelectTrigger className="w-28 bg-secondary/50">
+                      <SelectTrigger className="w-28 bg-secondary">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -239,11 +216,6 @@ export default function ProspectsPage() {
                     >
                       <SlidersHorizontal className="h-4 w-4" />
                       Filter
-                      {hasActiveFilters && (
-                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
-                          !
-                        </span>
-                      )}
                     </Button>
 
                     {compareIds.length >= 2 && (
@@ -284,13 +256,14 @@ export default function ProspectsPage() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="flex flex-col sm:flex-row gap-6 py-4 px-4 rounded-2xl bg-secondary/10">
+                      <div className="flex flex-col sm:flex-row gap-6 py-4 px-4 rounded-lg bg-secondary">
                         <div className="space-y-2 flex-1">
                           <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Tier</label>
                           <Select value={tierFilter} onValueChange={(v) => setTierFilter(v as Tier | 'all')}>
-                            <SelectTrigger className="bg-secondary/50">
+                            <SelectTrigger className="bg-background">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -329,7 +302,7 @@ export default function ProspectsPage() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
 
               <div className="space-y-3 mt-4">
                 <AnimatePresence mode="popLayout">
@@ -346,11 +319,7 @@ export default function ProspectsPage() {
               </div>
 
               {filteredProspects.length === 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center py-12"
-                >
+                <div className="text-center py-12">
                   <Search className="h-10 w-10 text-muted-foreground/30 mx-auto mb-4" />
                   <p className="text-muted-foreground">No prospects match your search or filters.</p>
                   {hasActiveFilters && (
@@ -358,34 +327,11 @@ export default function ProspectsPage() {
                       Clear all filters
                     </Button>
                   )}
-                </motion.div>
+                </div>
               )}
             </>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-center py-20"
-            >
-              <div className="relative mx-auto mb-8 w-40 h-40">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/10 to-accent/5 animate-pulse" />
-                <div className="absolute inset-4 rounded-full bg-secondary/20 flex items-center justify-center">
-                  <div className="space-y-2">
-                    <Users className="h-12 w-12 text-muted-foreground/30 mx-auto" />
-                    <div className="flex gap-1 justify-center">
-                      {['A', 'B', 'C'].map((tier) => (
-                        <span
-                          key={tier}
-                          className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-primary/10 text-primary/40"
-                        >
-                          {tier}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="text-center py-20">
               <h3 className="text-2xl font-semibold text-foreground mb-3">No Prospects Yet</h3>
               <p className="text-muted-foreground mb-2 max-w-sm mx-auto">
                 Score your first company to start building your prospect pipeline.
@@ -393,20 +339,16 @@ export default function ProspectsPage() {
               <p className="text-xs text-muted-foreground/60 mb-8 max-w-xs mx-auto">
                 Each scored company gets a tier (A-D), criteria breakdown, and AI-generated outreach.
               </p>
-              <Button asChild className="bg-primary hover:bg-primary/90 rounded-full px-8">
+              <Button asChild className="bg-primary hover:bg-primary/90 rounded px-8">
                 <Link to="/">Score Your First Prospect</Link>
               </Button>
-            </motion.div>
+            </div>
           )}
         </TabsContent>
 
         <TabsContent value="engagement">
           {engagementSettings?.engagement_enabled ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="grid gap-6"
-            >
+            <div className="grid gap-6">
               <TopEngagedLeads
                 limit={15}
                 onLeadClick={(leadId) => {
@@ -416,24 +358,17 @@ export default function ProspectsPage() {
                   });
                 }}
               />
-            </motion.div>
+            </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-20"
-            >
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary/30 mx-auto mb-6">
-                <TrendingUp className="h-10 w-10 text-muted-foreground/50" />
-              </div>
+            <div className="text-center py-20">
               <h3 className="text-2xl font-semibold text-foreground mb-3">Engagement Scoring Disabled</h3>
               <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
                 Enable engagement scoring in Settings, then Engage to track lead activity.
               </p>
-              <Button asChild className="bg-primary hover:bg-primary/90 rounded-full px-8">
+              <Button asChild className="bg-primary hover:bg-primary/90 rounded px-8">
                 <Link to="/setup">Go to Settings</Link>
               </Button>
-            </motion.div>
+            </div>
           )}
         </TabsContent>
       </Tabs>
