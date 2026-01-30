@@ -155,7 +155,7 @@ Examples:
               <Button
                 size="sm"
                 onClick={handleEnrich}
-                className="gap-1.5 bg-primary/90 hover:bg-primary text-xs h-7 rounded-full"
+                className="gap-1.5 bg-primary/90 hover:bg-primary text-xs h-7 rounded-sm"
               >
                 <Wand2 className="h-3 w-3" />
                 Auto-Enrich
@@ -199,7 +199,7 @@ Examples:
         <Button
           onClick={() => onScore(selectedTone)}
           disabled={isScoring || isEnriching || !value.trim()}
-          className="gap-2 bg-primary hover:bg-primary/90 min-w-[160px] rounded-full px-8"
+          className="gap-2 bg-primary hover:bg-primary/90 min-w-[160px] rounded-sm px-8"
         >
           {isScoring ? (
             <>
