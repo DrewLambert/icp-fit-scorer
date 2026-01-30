@@ -8,7 +8,6 @@ import {
   Cpu, 
   Globe, 
   Link,
-  Sparkles,
   Check
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -110,10 +109,7 @@ export function EnrichedDataCard({ data }: EnrichedDataCardProps) {
       {/* Footer - subtle divider */}
       <div className="organic-divider !my-4" />
       <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <Sparkles className="h-3 w-3" />
-          <span>Waterfall enrichment</span>
-        </div>
+        <span>Waterfall enrichment</span>
         {data.dataSources && data.dataSources.length > 0 && (
           <div className="flex items-center gap-1">
             {data.dataSources.map((source) => (

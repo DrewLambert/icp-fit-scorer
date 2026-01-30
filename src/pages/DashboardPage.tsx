@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { useICPStore } from '@/stores/icpStore';
-import { BarChart3, PieChart as PieChartIcon, TrendingUp, AlertTriangle } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,10 +11,10 @@ import {
 import { Tier } from '@/types/icp';
 
 const TIER_COLORS: Record<Tier, string> = {
-  A: 'hsl(85, 45%, 50%)',
-  B: 'hsl(25, 85%, 55%)',
-  C: 'hsl(42, 90%, 55%)',
-  D: 'hsl(0, 65%, 55%)',
+  A: 'hsl(142, 69%, 58%)',
+  B: 'hsl(187, 82%, 53%)',
+  C: 'hsl(45, 93%, 56%)',
+  D: 'hsl(0, 72%, 68%)',
 };
 
 export default function DashboardPage() {
@@ -89,37 +88,21 @@ export default function DashboardPage() {
   if (prospects.length === 0) {
     return (
       <div className="max-w-5xl mx-auto space-y-16">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-6 pt-8"
-        >
-          <div className="inline-flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-              <BarChart3 className="h-5 w-5 text-primary" />
-            </div>
-          </div>
-          <h1 className="text-5xl sm:text-6xl font-bold gradient-text leading-tight">
+        <div className="space-y-4 pt-8">
+          <h1 className="text-h1 text-foreground">
             Dashboard
           </h1>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-center py-20"
-        >
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary/30 mx-auto mb-6">
-            <BarChart3 className="h-10 w-10 text-muted-foreground/50" />
-          </div>
+        </div>
+        <div className="text-center py-20">
+          <BarChart3 className="h-12 w-12 text-muted-foreground/30 mx-auto mb-6" />
           <h3 className="text-2xl font-semibold text-foreground mb-3">No Data Yet</h3>
           <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
             Score some prospects first to see analytics and insights here.
           </p>
-          <Button asChild className="bg-primary hover:bg-primary/90 rounded-full px-8">
+          <Button asChild className="bg-primary hover:bg-primary/90 rounded px-8">
             <Link to="/">Score Your First Prospect</Link>
           </Button>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -128,81 +111,56 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-16">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-6 pt-8"
-      >
-        <div className="inline-flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-            <BarChart3 className="h-5 w-5 text-primary" />
-          </div>
-        </div>
-        <h1 className="text-5xl sm:text-6xl font-bold gradient-text leading-tight">
+      <div className="space-y-4 pt-8">
+        <h1 className="text-h1 text-foreground">
           Dashboard
         </h1>
-        <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed">
+        <p className="text-muted-foreground max-w-xl text-body-lg">
           Analytics and insights across {prospects.length} scored prospect{prospects.length !== 1 ? 's' : ''}.
         </p>
-      </motion.div>
+      </div>
 
       {/* KPI Cards */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-4"
-      >
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total Prospects', value: prospects.length, icon: BarChart3 },
-          { label: 'Avg Score', value: avgScore, icon: TrendingUp },
-          { label: 'Tier A', value: tierCounts.A, icon: PieChartIcon },
-          { label: 'Needs Work', value: tierCounts.C + tierCounts.D, icon: AlertTriangle },
+          { label: 'Total Prospects', value: prospects.length },
+          { label: 'Avg Score', value: avgScore },
+          { label: 'Tier A', value: tierCounts.A },
+          { label: 'Needs Work', value: tierCounts.C + tierCounts.D },
         ].map((kpi) => (
-          <div key={kpi.label} className="rounded-2xl bg-secondary/20 p-5 text-center space-y-2">
-            <kpi.icon className="h-5 w-5 text-primary mx-auto" />
+          <div key={kpi.label} className="rounded-lg bg-card border border-border p-5 space-y-2">
             <p className="text-3xl font-bold text-foreground">{kpi.value}</p>
             <p className="text-xs text-muted-foreground">{kpi.label}</p>
           </div>
         ))}
-      </motion.div>
+      </div>
 
       {/* Charts Grid */}
       <div className="grid md:grid-cols-2 gap-8">
         {/* Score Distribution */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground">Score Distribution</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={scoreDistribution}>
-                <XAxis dataKey="range" tick={{ fill: 'hsl(30, 10%, 55%)', fontSize: 12 }} />
-                <YAxis allowDecimals={false} tick={{ fill: 'hsl(30, 10%, 55%)', fontSize: 12 }} />
+                <XAxis dataKey="range" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                <YAxis allowDecimals={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <RechartsTooltip
                   contentStyle={{
-                    background: 'hsl(20, 12%, 9%)',
-                    border: '1px solid hsl(25, 8%, 18%)',
-                    borderRadius: '0.75rem',
-                    color: 'hsl(35, 25%, 95%)',
+                    background: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--foreground))',
                   }}
                 />
-                <Bar dataKey="count" fill="hsl(25, 85%, 55%)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </div>
 
         {/* Tier Breakdown */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground">Tier Breakdown</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -223,68 +181,58 @@ export default function DashboardPage() {
                 </Pie>
                 <RechartsTooltip
                   contentStyle={{
-                    background: 'hsl(20, 12%, 9%)',
-                    border: '1px solid hsl(25, 8%, 18%)',
-                    borderRadius: '0.75rem',
-                    color: 'hsl(35, 25%, 95%)',
+                    background: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--foreground))',
                   }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </div>
 
         {/* Scoring Trends */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground">Scoring Trends</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={scoringTrends}>
-                <XAxis dataKey="name" tick={{ fill: 'hsl(30, 10%, 55%)', fontSize: 10 }} />
-                <YAxis domain={[0, 100]} tick={{ fill: 'hsl(30, 10%, 55%)', fontSize: 12 }} />
+                <XAxis dataKey="name" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+                <YAxis domain={[0, 100]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <RechartsTooltip
                   contentStyle={{
-                    background: 'hsl(20, 12%, 9%)',
-                    border: '1px solid hsl(25, 8%, 18%)',
-                    borderRadius: '0.75rem',
-                    color: 'hsl(35, 25%, 95%)',
+                    background: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--foreground))',
                   }}
                 />
-                <Area type="monotone" dataKey="score" stroke="hsl(25, 85%, 55%)" fill="hsl(25, 85%, 55%)" fillOpacity={0.15} strokeWidth={2} />
-                <Area type="monotone" dataKey="avg" stroke="hsl(38, 75%, 58%)" fill="none" strokeWidth={2} strokeDasharray="5 5" />
+                <Area type="monotone" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.15} strokeWidth={2} />
+                <Area type="monotone" dataKey="avg" stroke="hsl(var(--muted-foreground))" fill="none" strokeWidth={2} strokeDasharray="5 5" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </motion.div>
+        </div>
 
         {/* Top Criteria Gaps */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="space-y-4"
-        >
+        <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground">Criteria Gaps</h3>
           {criteriaGaps.length > 0 ? (
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={criteriaGaps} cx="50%" cy="50%" outerRadius="70%">
-                  <PolarGrid stroke="hsl(25, 8%, 18%)" />
-                  <PolarAngleAxis dataKey="name" tick={{ fill: 'hsl(30, 10%, 55%)', fontSize: 11 }} />
-                  <PolarRadiusAxis domain={[0, 100]} tick={{ fill: 'hsl(30, 10%, 55%)', fontSize: 10 }} />
-                  <Radar dataKey="avgScore" stroke="hsl(25, 85%, 55%)" fill="hsl(25, 85%, 55%)" fillOpacity={0.2} strokeWidth={2} />
+                  <PolarGrid stroke="hsl(var(--border))" />
+                  <PolarAngleAxis dataKey="name" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
+                  <PolarRadiusAxis domain={[0, 100]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+                  <Radar dataKey="avgScore" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
           ) : (
             <p className="text-muted-foreground text-sm">No criteria data available.</p>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
