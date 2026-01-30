@@ -66,9 +66,9 @@ ${outreach.cta}`;
     return (
       <motion.div
         className="glass-card overflow-hidden"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.4 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
       >
         <div className="border-b border-border/50 bg-primary/5 px-5 py-3">
           <div className="flex items-center gap-2">
@@ -117,9 +117,9 @@ ${outreach.cta}`;
   return (
     <motion.div
       className="fluid-section"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.6, duration: 0.4 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
     >
       {/* Header - minimal, flowing */}
       <div className="flex items-center justify-between mb-6">
@@ -197,11 +197,8 @@ ${outreach.cta}`;
         {sections.map((section, index) => {
           const Icon = section.icon;
           return (
-            <motion.div
+            <div
               key={section.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 + index * 0.1 }}
               className="inline-row group"
             >
               <div className={`shrink-0 ${section.color}`}>
@@ -227,7 +224,7 @@ ${outreach.cta}`;
                   <Copy className="h-3 w-3" />
                 )}
               </Button>
-            </motion.div>
+            </div>
           );
         })}
       </div>

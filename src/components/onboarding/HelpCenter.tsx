@@ -188,7 +188,7 @@ export function HelpCenter() {
             initial={{ x: '100%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
             className="relative w-full max-w-xl h-[90vh] fluid-card overflow-hidden flex flex-col"
           >
             {/* Header */}

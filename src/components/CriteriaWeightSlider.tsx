@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Slider } from '@/components/ui/slider';
 import { 
   Users, 
@@ -34,11 +33,8 @@ export function CriteriaWeightSlider({
   const Icon = iconMap[criteria.icon] || Building2;
 
   return (
-    <motion.div
+    <div
       className="py-5 border-b border-border/30 last:border-0 hover-highlight rounded-xl"
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.05 * index, duration: 0.4 }}
     >
       <div className="flex items-start gap-4">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
@@ -67,6 +63,6 @@ export function CriteriaWeightSlider({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

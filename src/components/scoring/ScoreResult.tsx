@@ -68,12 +68,7 @@ export function ScoreResult({ result, ruleBasedScore, onSave, onUpdateOutreach }
       <div className="flex flex-col items-center">
         <ScoreGauge score={result.totalScore} />
         
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-          className="mt-6"
-        >
+        <div className="mt-6">
           <Button
             onClick={onSave}
             size="lg"
@@ -82,7 +77,7 @@ export function ScoreResult({ result, ruleBasedScore, onSave, onUpdateOutreach }
             <Save className="h-5 w-5" />
             Save to Prospects
           </Button>
-        </motion.div>
+        </div>
       </div>
 
       {/* Rule-Based Score Display */}

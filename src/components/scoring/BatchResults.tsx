@@ -92,11 +92,8 @@ export function BatchResults({
           const TierIcon = tierIcons[prospect.tier];
           
           return (
-            <motion.div
+            <div
               key={prospect.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
               className="relative"
             >
               <div
@@ -135,18 +132,11 @@ export function BatchResults({
                   <Save className="h-4 w-4" />
                 </Button>
 
-                <motion.div
-                  animate={{ rotate: expandedId === prospect.id ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                </motion.div>
+                <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform duration-150 ${expandedId === prospect.id ? 'rotate-180' : ''}`} />
               </div>
 
               {expandedId === prospect.id && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
+                <div
                   className="pl-14 pr-4 pb-6 space-y-4"
                 >
                   {/* Signal breakdown - flowing list */}
@@ -187,19 +177,16 @@ export function BatchResults({
                     <p className="text-xs text-muted-foreground mb-1">Opening Line</p>
                     <p className="text-sm italic text-foreground">"{prospect.openingLine}"</p>
                   </div>
-                </motion.div>
+                </div>
               )}
-            </motion.div>
+            </div>
           );
         })}
 
         {/* Failed Companies - inline, subtle */}
         {failedCompanies.map((company, index) => (
-          <motion.div
+          <div
             key={`failed-${index}`}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: (results.length + index) * 0.05 }}
             className="inline-row opacity-50"
           >
             <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-destructive/15">
@@ -211,7 +198,7 @@ export function BatchResults({
             <Badge variant="outline" className="text-destructive border-destructive/30">
               Failed
             </Badge>
-          </motion.div>
+          </div>
         ))}
       </div>
     </motion.div>

@@ -57,9 +57,10 @@ export function CompareView({ prospects, onRemove, onClose }: CompareViewProps) 
     >
       <motion.div
         className="glass-card w-full max-w-6xl max-h-[90vh] overflow-auto"
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
       >
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/50 bg-card/95 backdrop-blur-sm px-6 py-4">
           <h2 className="text-xl font-bold">Compare Prospects</h2>
