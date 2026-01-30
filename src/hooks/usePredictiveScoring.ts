@@ -26,7 +26,6 @@ export function usePredictiveScoring() {
       if (error) throw error;
       setSettings(data as PredictiveSettings | null);
     } catch (err) {
-      console.error('Error fetching predictive settings:', err);
     }
   }, []);
 
@@ -49,7 +48,6 @@ export function usePredictiveScoring() {
         } as PredictiveModelState);
       }
     } catch (err) {
-      console.error('Error fetching model state:', err);
     }
   }, []);
 
@@ -62,7 +60,6 @@ export function usePredictiveScoring() {
       if (error) throw error;
       setDealCount(count || 0);
     } catch (err) {
-      console.error('Error fetching deal count:', err);
     }
   }, []);
 
@@ -98,7 +95,6 @@ export function usePredictiveScoring() {
       }
       toast.success(enabled ? 'Predictive scoring enabled' : 'Predictive scoring disabled');
     } catch (err) {
-      console.error('Error toggling predictive scoring:', err);
       toast.error('Failed to update settings');
     }
   };
@@ -118,7 +114,6 @@ export function usePredictiveScoring() {
       setSettings(data as PredictiveSettings);
       toast.success('Threshold updated');
     } catch (err) {
-      console.error('Error updating threshold:', err);
       toast.error('Failed to update threshold');
     }
   };
@@ -139,7 +134,6 @@ export function usePredictiveScoring() {
       toast.success(`Model trained successfully! Accuracy: ${data.accuracy?.toFixed(1)}%`);
       await fetchModelState();
     } catch (err) {
-      console.error('Training error:', err);
       toast.error(err instanceof Error ? err.message : 'Failed to train model');
     } finally {
       setIsTraining(false);

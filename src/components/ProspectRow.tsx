@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ProspectScore, Tier } from '@/types/icp';
@@ -37,11 +36,8 @@ export function ProspectRow({
   const TierIcon = tierIcons[prospect.tier];
 
   return (
-    <motion.div
+    <div
       className="relative"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      layout
     >
       <div 
         className="inline-row cursor-pointer group"
@@ -98,19 +94,11 @@ export function ProspectRow({
           <Trash2 className="h-4 w-4" />
         </Button>
 
-        <motion.div
-          animate={{ rotate: expanded ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <ChevronDown className="h-5 w-5 text-muted-foreground" />
-        </motion.div>
+        <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform duration-150 ${expanded ? 'rotate-180' : ''}`} />
       </div>
 
       {expanded && (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
+        <div
           className="pl-14 pr-4 pb-6 space-y-6"
         >
           {/* Signal breakdown - no card wrapper */}
@@ -221,8 +209,8 @@ export function ProspectRow({
               </div>
             )}
           </div>
-        </motion.div>
+        </div>
       )}
-    </motion.div>
+    </div>
   );
 }

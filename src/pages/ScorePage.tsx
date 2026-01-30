@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SingleScoreInput } from '@/components/scoring/SingleScoreInput';
 import { BatchScoreInput } from '@/components/scoring/BatchScoreInput';
@@ -12,7 +12,7 @@ import { useScoringRules } from '@/hooks/useScoringRules';
 import { evaluateLeadAgainstRules } from '@/lib/rule-scoring-engine';
 import { ProspectScore, getTierFromScore, CriteriaScore, EnrichedCompany, ScoringMode, OutreachTone, OutreachBlock } from '@/types/icp';
 import { RuleBasedScore } from '@/types/scoring-rules';
-import { Target, User, Users, HelpCircle } from 'lucide-react';
+import { HelpCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -29,14 +29,14 @@ interface AIScoreResponse {
 export default function ScorePage() {
   const { criteria, addProspect, scoringMode } = useICPStore();
   const { rules, settings } = useScoringRules();
-  
+
   // Single mode state
   const [companyInfo, setCompanyInfo] = useState('');
   const [isScoring, setIsScoring] = useState(false);
   const [result, setResult] = useState<ProspectScore | null>(null);
   const [ruleBasedScore, setRuleBasedScore] = useState<RuleBasedScore | null>(null);
   const [enrichedData, setEnrichedData] = useState<EnrichedCompany | null>(null);
-  
+
   // Batch mode state
   const [batchInput, setBatchInput] = useState('');
   const [isBatchScoring, setIsBatchScoring] = useState(false);
@@ -55,8 +55,8 @@ export default function ScorePage() {
 
   const scoreCompany = async (companyInfo: string, tone: OutreachTone = 'casual'): Promise<ProspectScore | null> => {
     const { data, error } = await supabase.functions.invoke<AIScoreResponse>('score-prospect', {
-      body: { 
-        companyInfo, 
+      body: {
+        companyInfo,
         criteria: criteria.map(c => ({
           id: c.id,
           name: c.name,
@@ -85,7 +85,7 @@ export default function ScorePage() {
       openingLine: data.openingLine,
       outreach: data.outreach,
       outreachTone: data.outreachTone,
-      scoringMode: scoringMode, // Store the mode used
+      scoringMode: scoringMode,
       createdAt: new Date().toISOString(),
     };
   };
@@ -106,8 +106,7 @@ export default function ScorePage() {
     try {
       const prospect = await scoreCompany(companyInfo, tone);
       setResult(prospect);
-      
-      // Calculate rule-based score if enabled and rules exist
+
       if (settings?.rule_based_enabled && rules.length > 0 && prospect) {
         const ruleScore = evaluateLeadAgainstRules(
           { enrichedData: enrichedData || undefined },
@@ -119,7 +118,6 @@ export default function ScorePage() {
         setRuleBasedScore(null);
       }
     } catch (err) {
-      console.error('Scoring error:', err);
       toast({
         title: 'Scoring Failed',
         description: err instanceof Error ? err.message : 'An unexpected error occurred',
@@ -160,12 +158,10 @@ export default function ScorePage() {
           setBatchProgress(prev => ({ ...prev, completed: prev.completed + 1 }));
         }
       } catch (err) {
-        console.error(`Failed to score ${company}:`, err);
         failed.push(company);
         setBatchProgress(prev => ({ ...prev, failed: prev.failed + 1 }));
       }
 
-      // Small delay between requests to avoid rate limiting
       if (i < companies.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 500));
       }
@@ -216,7 +212,6 @@ export default function ScorePage() {
     setEnrichedData(null);
   };
 
-  // Recalculate rule score when enriched data changes
   useEffect(() => {
     if (enrichedData && settings?.rule_based_enabled && rules.length > 0) {
       const ruleScore = evaluateLeadAgainstRules(
@@ -238,49 +233,30 @@ export default function ScorePage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-16">
-      {/* Hero section - flowing, no box */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-6 pt-8"
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="inline-block"
-        >
-          <span className="section-label">AI-Powered Analysis</span>
-        </motion.div>
-        <h1 className="text-5xl sm:text-6xl font-bold gradient-text leading-tight">
+      <div className="space-y-4 pt-8">
+        <span className="section-label">AI-Powered Analysis</span>
+        <h1 className="text-h1 text-foreground">
           Score Prospects
         </h1>
-        <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed">
+        <p className="text-muted-foreground max-w-xl text-body-lg">
           Analyze companies and assign them to tiers based on your ICP criteria.
         </p>
-      </motion.div>
+      </div>
 
-      {/* Mode Toggle - pill style, no container */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
+      <div>
         <Tabs defaultValue="single" className="space-y-10">
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center gap-3">
             <TabsList className="inline-flex bg-transparent p-0 gap-2">
-              <TabsTrigger 
-                value="single" 
-                className="gap-2 px-6 py-2.5 rounded-full bg-secondary/20 data-[state=active]:bg-primary/15 data-[state=active]:text-primary border-0"
+              <TabsTrigger
+                value="single"
+                className="gap-2 px-5 py-2 rounded text-sm bg-secondary data-[state=active]:bg-primary/15 data-[state=active]:text-primary border-0"
               >
-                <User className="h-4 w-4" />
                 Single
               </TabsTrigger>
-              <TabsTrigger 
-                value="batch" 
-                className="gap-2 px-6 py-2.5 rounded-full bg-secondary/20 data-[state=active]:bg-primary/15 data-[state=active]:text-primary border-0"
+              <TabsTrigger
+                value="batch"
+                className="gap-2 px-5 py-2 rounded text-sm bg-secondary data-[state=active]:bg-primary/15 data-[state=active]:text-primary border-0"
               >
-                <Users className="h-4 w-4" />
                 Batch
               </TabsTrigger>
             </TabsList>
@@ -300,8 +276,7 @@ export default function ScorePage() {
             </Tooltip>
           </div>
 
-          {/* Input area - seamless, no container */}
-          <TabsContent value="single" className="seamless-section">
+          <TabsContent value="single">
             <SingleScoreInput
               value={companyInfo}
               onChange={setCompanyInfo}
@@ -314,7 +289,7 @@ export default function ScorePage() {
             />
           </TabsContent>
 
-          <TabsContent value="batch" className="seamless-section">
+          <TabsContent value="batch">
             <BatchScoreInput
               value={batchInput}
               onChange={setBatchInput}
@@ -328,17 +303,17 @@ export default function ScorePage() {
             />
           </TabsContent>
         </Tabs>
-      </motion.div>
+      </div>
 
       {/* Single Mode Results */}
       <AnimatePresence mode="wait">
         {isScoring && <ScoringLoader key="single-loading" />}
         {result && !isScoring && (
-          <ScoreResult 
-            key="single-result" 
-            result={result} 
+          <ScoreResult
+            key="single-result"
+            result={result}
             ruleBasedScore={ruleBasedScore}
-            onSave={handleSaveSingle} 
+            onSave={handleSaveSingle}
           />
         )}
       </AnimatePresence>
@@ -354,7 +329,7 @@ export default function ScorePage() {
             currentCompany={batchProgress.current}
           />
         )}
-        
+
         {showBatchResults && !isBatchScoring && (
           <BatchResults
             key="batch-results"

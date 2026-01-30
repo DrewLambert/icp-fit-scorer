@@ -1,58 +1,47 @@
-import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Target, Settings, Users } from 'lucide-react';
-import fitchLogo from '@/assets/fitch-logo.png';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const navItems = [
-  { path: '/', label: 'Score', icon: Target },
-  { path: '/setup', label: 'Setup', icon: Settings },
-  { path: '/prospects', label: 'Prospects', icon: Users },
+  { path: '/', label: 'Score' },
+  { path: '/setup', label: 'Setup' },
+  { path: '/prospects', label: 'Prospects' },
+  { path: '/dashboard', label: 'Dashboard' },
 ];
 
 export function AppHeader() {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50">
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between px-8 py-4 bg-gradient-to-b from-background via-background/80 to-transparent"
-      >
-        <Link to="/" className="flex items-center gap-2">
-          <motion.img
-            src={fitchLogo}
-            alt="Fitch"
-            className="h-8 w-auto"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          />
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
+      <div className="flex items-center justify-between px-8 py-3 max-w-7xl mx-auto">
+        <Link to="/" className="text-lg font-semibold font-display text-foreground">
+          FitCheck
         </Link>
 
-        <nav className="flex items-center gap-2">
+        <nav className="flex items-center gap-1">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
-            const Icon = item.icon;
 
             return (
-              <Link key={item.path} to={item.path} aria-current={isActive ? "page" : undefined} aria-label={item.label}>
-                <motion.div
-                  className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium transition-all duration-300 ${
-                    isActive
-                      ? 'bg-primary/15 text-primary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/30'
-                  }`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{item.label}</span>
-                </motion.div>
+              <Link
+                key={item.path}
+                to={item.path}
+                aria-current={isActive ? 'page' : undefined}
+                className={`px-4 py-1.5 rounded text-sm font-medium transition-colors duration-150 ${
+                  isActive
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {item.label}
               </Link>
             );
           })}
+          <div className="ml-2">
+            <ThemeToggle />
+          </div>
         </nav>
-      </motion.div>
+      </div>
     </header>
   );
 }

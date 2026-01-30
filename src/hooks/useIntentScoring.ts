@@ -29,7 +29,6 @@ export function useIntentScoring(leadId?: string) {
       if (error) throw error;
       setSettings(data as IntentSettings | null);
     } catch (err) {
-      console.error('Error fetching intent settings:', err);
     }
   }, []);
 
@@ -56,7 +55,6 @@ export function useIntentScoring(leadId?: string) {
       setFirstPartySignals((firstPartyRes.data || []) as FirstPartySignal[]);
       setThirdPartySignals((thirdPartyRes.data || []) as ThirdPartySignal[]);
     } catch (err) {
-      console.error('Error fetching signals:', err);
     }
   }, [leadId]);
 
@@ -92,7 +90,6 @@ export function useIntentScoring(leadId?: string) {
       }
       toast.success(enabled ? 'Intent scoring enabled' : 'Intent scoring disabled');
     } catch (err) {
-      console.error('Error toggling intent scoring:', err);
       toast.error('Failed to update settings');
     }
   };
@@ -112,7 +109,6 @@ export function useIntentScoring(leadId?: string) {
       setSettings(data as IntentSettings);
       toast.success('Settings updated');
     } catch (err) {
-      console.error('Error updating settings:', err);
       toast.error('Failed to update settings');
     }
   };
@@ -136,7 +132,6 @@ export function useIntentScoring(leadId?: string) {
       toast.success('Signal added');
       return data;
     } catch (err) {
-      console.error('Error adding signal:', err);
       toast.error('Failed to add signal');
       return null;
     }

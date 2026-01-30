@@ -8,7 +8,6 @@ import {
   Cpu, 
   Globe, 
   Link,
-  Sparkles,
   Check
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -28,8 +27,9 @@ export function EnrichedDataCard({ data }: EnrichedDataCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
       className="fluid-section"
     >
       {/* Header - minimal, inline status */}
@@ -68,7 +68,7 @@ export function EnrichedDataCard({ data }: EnrichedDataCardProps) {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
           {fields.map((field) => (
             <div key={field.label} className="flex items-start gap-2">
-              <field.icon className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+              <field.icon className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">{field.label}</p>
                 <p className="text-sm font-medium text-foreground truncate">
@@ -83,7 +83,7 @@ export function EnrichedDataCard({ data }: EnrichedDataCardProps) {
         {data.techStack && data.techStack.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Cpu className="h-4 w-4 text-primary" />
+              <Cpu className="h-4 w-4 text-muted-foreground" />
               <span className="text-xs text-muted-foreground">Tech Stack</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -91,7 +91,7 @@ export function EnrichedDataCard({ data }: EnrichedDataCardProps) {
                 <Badge 
                   key={tech} 
                   variant="secondary"
-                  className="text-xs bg-primary/10 text-primary border-primary/20"
+                  className="text-xs bg-secondary text-foreground border-border"
                 >
                   {tech}
                 </Badge>
@@ -109,10 +109,7 @@ export function EnrichedDataCard({ data }: EnrichedDataCardProps) {
       {/* Footer - subtle divider */}
       <div className="organic-divider !my-4" />
       <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <Sparkles className="h-3 w-3" />
-          <span>Waterfall enrichment</span>
-        </div>
+        <span>Waterfall enrichment</span>
         {data.dataSources && data.dataSources.length > 0 && (
           <div className="flex items-center gap-1">
             {data.dataSources.map((source) => (

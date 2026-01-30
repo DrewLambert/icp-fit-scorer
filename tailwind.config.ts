@@ -100,15 +100,14 @@ export default {
         '22': '5.5rem',
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "12px",
+        md: "8px",
+        sm: "4px",
       },
       boxShadow: {
         'sm': 'var(--shadow-sm)',
         'md': 'var(--shadow-md)',
         'lg': 'var(--shadow-lg)',
-        'glow': 'var(--shadow-glow)',
       },
       keyframes: {
         "accordion-down": {
@@ -123,21 +122,11 @@ export default {
           from: { strokeDashoffset: "283" },
           to: { strokeDashoffset: "var(--score-offset)" },
         },
-        "fade-up": {
-          from: { opacity: "0", transform: "translateY(20px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "scale-in": {
-          from: { opacity: "0", transform: "scale(0.9)" },
-          to: { opacity: "1", transform: "scale(1)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "score-reveal": "score-reveal 1.5s ease-out forwards",
-        "fade-up": "fade-up 0.5s ease-out forwards",
-        "scale-in": "scale-in 0.3s ease-out forwards",
       },
     },
   },

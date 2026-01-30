@@ -333,7 +333,7 @@ Stripe - 8000 employees, FinTech, $95B valuation"
         <Button
           onClick={enrichedCompanies.length > 0 ? handleScoreEnriched : onScore}
           disabled={isScoring || isEnriching || (companyCount === 0 && enrichedCompanies.length === 0)}
-          className="gap-2 bg-primary hover:bg-primary/90 min-w-[160px] rounded-full px-8"
+          className="gap-2 bg-primary hover:bg-primary/90 min-w-[160px] rounded-sm px-8"
         >
           {isScoring ? (
             <>

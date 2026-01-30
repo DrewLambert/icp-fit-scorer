@@ -27,7 +27,6 @@ export function useScoringRules() {
       
       setRules(typedRules);
     } catch (err) {
-      console.error('Error fetching rules:', err);
       setError('Failed to load scoring rules');
     }
   }, []);
@@ -43,7 +42,6 @@ export function useScoringRules() {
       if (error) throw error;
       setSettings(data as ScoringSettings | null);
     } catch (err) {
-      console.error('Error fetching settings:', err);
       setError('Failed to load scoring settings');
     }
   }, []);
@@ -78,7 +76,6 @@ export function useScoringRules() {
       toast.success('Rule created successfully');
       return typedRule;
     } catch (err) {
-      console.error('Error creating rule:', err);
       toast.error('Failed to create rule');
       return null;
     }
@@ -105,7 +102,6 @@ export function useScoringRules() {
       toast.success('Rule updated successfully');
       return typedRule;
     } catch (err) {
-      console.error('Error updating rule:', err);
       toast.error('Failed to update rule');
       return null;
     }
@@ -124,7 +120,6 @@ export function useScoringRules() {
       toast.success('Rule deleted successfully');
       return true;
     } catch (err) {
-      console.error('Error deleting rule:', err);
       toast.error('Failed to delete rule');
       return false;
     }
@@ -150,7 +145,6 @@ export function useScoringRules() {
       await Promise.all(updates);
       toast.success('Rules reordered successfully');
     } catch (err) {
-      console.error('Error reordering rules:', err);
       toast.error('Failed to reorder rules');
       // Refetch to restore correct order on error
       fetchRules();
@@ -187,7 +181,6 @@ export function useScoringRules() {
       toast.success('Settings updated successfully');
       return true;
     } catch (err) {
-      console.error('Error updating settings:', err);
       toast.error('Failed to update settings');
       return false;
     }
