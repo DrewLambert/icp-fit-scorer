@@ -1,17 +1,27 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { CriteriaWeightSlider } from '@/components/CriteriaWeightSlider';
 import { useICPStore } from '@/stores/icpStore';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, RotateCcw, CheckCircle, Zap, Scale, Calculator, Brain, Target, Activity, ShieldOff } from 'lucide-react';
+import { Settings, RotateCcw, CheckCircle, Zap, Scale, Calculator, Brain, Target, Activity, ShieldOff, Loader2 } from 'lucide-react';
 import { DEFAULT_CRITERIA, ScoringMode } from '@/types/icp';
 import { toast } from '@/hooks/use-toast';
 import { RuleBasedSettings } from '@/components/scoring-rules';
-import { PredictiveSettings } from '@/components/predictive-scoring';
-import { IntentSettings } from '@/components/intent-scoring';
-import { EngagementSettings } from '@/components/engagement-scoring';
-import { NegativeSettings } from '@/components/negative-scoring';
+
+const PredictiveSettings = lazy(() => import('@/components/predictive-scoring').then(m => ({ default: m.PredictiveSettings })));
+const IntentSettings = lazy(() => import('@/components/intent-scoring').then(m => ({ default: m.IntentSettings })));
+const EngagementSettings = lazy(() => import('@/components/engagement-scoring').then(m => ({ default: m.EngagementSettings })));
+const NegativeSettings = lazy(() => import('@/components/negative-scoring').then(m => ({ default: m.NegativeSettings })));
+
+function TabLoader() {
+  return (
+    <div className="flex items-center justify-center py-20">
+      <Loader2 className="h-6 w-6 text-primary animate-spin" />
+    </div>
+  );
+}
 
 export default function SetupPage() {
   const { criteria, updateCriteriaWeight, setCriteria, scoringMode, setScoringMode } = useICPStore();
@@ -244,22 +254,30 @@ export default function SetupPage() {
 
         {/* Predictive Scoring Tab */}
         <TabsContent value="predictive">
-          <PredictiveSettings />
+          <Suspense fallback={<TabLoader />}>
+            <PredictiveSettings />
+          </Suspense>
         </TabsContent>
 
         {/* Intent-Based Scoring Tab */}
         <TabsContent value="intent">
-          <IntentSettings />
+          <Suspense fallback={<TabLoader />}>
+            <IntentSettings />
+          </Suspense>
         </TabsContent>
 
         {/* Engagement-Based Scoring Tab */}
         <TabsContent value="engagement">
-          <EngagementSettings />
+          <Suspense fallback={<TabLoader />}>
+            <EngagementSettings />
+          </Suspense>
         </TabsContent>
 
         {/* Negative Lead Scoring Tab */}
         <TabsContent value="negative">
-          <NegativeSettings />
+          <Suspense fallback={<TabLoader />}>
+            <NegativeSettings />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </div>
