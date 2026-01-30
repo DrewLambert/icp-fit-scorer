@@ -56,6 +56,7 @@ export function ProspectRow({
               onToggleCompare();
             }}
             className="h-4 w-4 rounded border-border bg-secondary accent-primary"
+            aria-label={`Compare ${prospect.companyName}`}
           />
         )}
         
@@ -92,6 +93,7 @@ export function ProspectRow({
             onDelete(prospect.id);
           }}
           className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+          aria-label={`Delete ${prospect.companyName}`}
         >
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -125,11 +127,11 @@ export function ProspectRow({
                   if (prospect.scoringMode === 'advanced' && a.advancedScore !== undefined && b.advancedScore !== undefined) {
                     return b.advancedScore - a.advancedScore;
                   }
-                  return (b.score / b.maxScore) - (a.score / a.maxScore);
+                  return (b.maxScore > 0 ? b.score / b.maxScore : 0) - (a.maxScore > 0 ? a.score / a.maxScore : 0);
                 })
                 .map((criteria) => {
                   const hasAdvancedScore = prospect.scoringMode === 'advanced' && criteria.advancedScore !== undefined;
-                  const percentage = Math.round((criteria.score / criteria.maxScore) * 100);
+                  const percentage = criteria.maxScore > 0 ? Math.round((criteria.score / criteria.maxScore) * 100) : 0;
                   const isPoor = percentage < 40;
                   const isModerate = percentage >= 40 && percentage < 70;
                   const isNegative = hasAdvancedScore && criteria.advancedScore! < 0;

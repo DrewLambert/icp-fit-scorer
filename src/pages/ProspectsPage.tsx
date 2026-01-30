@@ -285,8 +285,9 @@ export default function ProspectsPage() {
           <CompareView
             prospects={compareProspects}
             onRemove={(id) => {
-              toggleCompare(id);
-              if (compareIds.length <= 2) setShowCompare(false);
+              const remaining = compareIds.filter((i) => i !== id);
+              setCompareIds(remaining);
+              if (remaining.length < 2) setShowCompare(false);
             }}
             onClose={() => setShowCompare(false)}
           />

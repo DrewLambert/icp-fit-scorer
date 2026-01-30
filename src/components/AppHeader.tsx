@@ -35,7 +35,7 @@ export function AppHeader() {
             const Icon = item.icon;
 
             return (
-              <Link key={item.path} to={item.path}>
+              <Link key={item.path} to={item.path} aria-current={isActive ? "page" : undefined} aria-label={item.label}>
                 <motion.div
                   className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm font-medium transition-all duration-300 ${
                     isActive

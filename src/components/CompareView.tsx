@@ -48,7 +48,7 @@ export function CompareView({ prospects, onRemove, onClose }: CompareViewProps) 
       >
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/50 bg-card/95 backdrop-blur-sm px-6 py-4">
           <h2 className="text-xl font-bold">Compare Prospects</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close comparison">
             <X className="h-5 w-5" />
           </Button>
         </div>
@@ -69,7 +69,7 @@ export function CompareView({ prospects, onRemove, onClose }: CompareViewProps) 
 
                   <div className="space-y-3">
                     {prospect.criteriaBreakdown.map((criteria) => {
-                      const percentage = Math.round((criteria.score / criteria.maxScore) * 100);
+                      const percentage = criteria.maxScore > 0 ? Math.round((criteria.score / criteria.maxScore) * 100) : 0;
                       
                       return (
                         <div key={criteria.criteriaId} className="space-y-1">

@@ -60,21 +60,24 @@ export function ScoreGauge({ score, size = 280, animate = true }: ScoreGaugeProp
     const duration = 1500;
     const startTime = Date.now();
     const startScore = 0;
+    let frameId: number;
 
     const animateScore = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = Math.round(startScore + (score - startScore) * eased);
-      
+
       setDisplayScore(current);
-      
+
       if (progress < 1) {
-        requestAnimationFrame(animateScore);
+        frameId = requestAnimationFrame(animateScore);
       }
     };
 
-    requestAnimationFrame(animateScore);
+    frameId = requestAnimationFrame(animateScore);
+
+    return () => cancelAnimationFrame(frameId);
   }, [score, animate]);
 
   return (

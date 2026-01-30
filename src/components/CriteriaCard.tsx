@@ -26,7 +26,7 @@ interface CriteriaCardProps {
 
 export function CriteriaCard({ criteria, index }: CriteriaCardProps) {
   const Icon = iconMap[criteria.icon] || Building2;
-  const percentage = Math.round((criteria.score / criteria.maxScore) * 100);
+  const percentage = criteria.maxScore > 0 ? Math.round((criteria.score / criteria.maxScore) * 100) : 0;
   
   const getBarColor = () => {
     if (percentage <= 40) return 'bg-score-poor';
